@@ -1,26 +1,29 @@
 {
   "development": {
-    "username": "root",
+    "username": null,
     "password": null,
     "database": "database_development",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "storage": "./data/database_development.sqlite",
+    "host": null,
+    "dialect": "sqlite"
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "dialect": "mysql"
+  },
+  "staging": {
+    "username": "postgres",
+    "password": "|micheldon3|",
+    "database": "database_staging",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "ssl": true
   }
 }
