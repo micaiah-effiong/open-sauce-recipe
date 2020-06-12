@@ -7,6 +7,11 @@
 var app = require('../app');
 var debug = require('debug')('recipe:server');
 var http = require('http');
+var https = require('https');
+var fs = require('fs');
+const db = require('../models/index')
+const cert = fs.readFileSync(__dirname+'/../config/local-cert.pem').toString()
+const key = fs.readFileSync(__dirname+'/../config/local-key.pem').toString()
 
 /**
  * Get port from environment and store in Express.
@@ -19,15 +24,25 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer({cert, key}, app);
+let sslserver = https.createServer({cert, key}, app)
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+db.sequelize
+  .sync({force: true})
+  .then(()=>{
+    sslserver.listen(8040, ()=>{
+      console.log('ssl', process.env.NODE_ENV);
+    });
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  }).catch(err=>{
+    console.log(err);
+  });
 
 /**
  * Normalize a port into a number, string, or false.
