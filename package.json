@@ -6,8 +6,9 @@
   "main": "./bin/www",
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "node-dev ./bin/www",
-    "test": "nodemon ./bin/www"
+    "stage": "node-dev ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": ">=8.0.0 <12.16.3",
