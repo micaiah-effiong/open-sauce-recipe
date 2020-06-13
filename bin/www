@@ -9,9 +9,10 @@ var debug = require('debug')('recipe:server');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
-const db = require('../models/index')
-const cert = fs.readFileSync(__dirname+'/../config/local-cert.pem').toString()
-const key = fs.readFileSync(__dirname+'/../config/local-key.pem').toString()
+const path = require('path');
+const db = require('../models/index');
+const cert = fs.readFileSync(path.join(__dirname, '..', 'config/local-cert.pem')).toString();
+const key = fs.readFileSync(path.join(__dirname, '..', 'config/local-key.pem')).toString();
 
 /**
  * Get port from environment and store in Express.
