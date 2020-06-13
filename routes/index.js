@@ -1,8 +1,16 @@
 var express = require("express");
 var router = express.Router();
 
-var usersRouter = require("./users");
+let usersRouter = require("./users");
+let recipesRouter = require("./recipes");
+let variationsRouter = require("./variations");
+let reviewsRouter = require("./reviews");
+
+/* use routes*/
 router.use("/users", usersRouter);
+router.use("/recipes", recipesRouter);
+router.use("/variations", variationsRouter);
+router.use("/reviews", reviewsRouter);
 
 /* GET home page. */
 router.get("/", function (req, res, next) {

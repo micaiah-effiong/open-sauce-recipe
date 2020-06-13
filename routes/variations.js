@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-/* GET users listing. */
+/* GET variations listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a GET / resource");
 });
