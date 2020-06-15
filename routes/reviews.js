@@ -1,25 +1,16 @@
 var express = require("express");
+let {
+  getSingle,
+  getAll,
+  create,
+  update,
+  deleteSingle,
+} = require("../controllers/index").reviews;
 var router = express.Router();
 
 /* GET reviews listing. */
-router.get("/", function (req, res, next) {
-  res.send("respond with a GET / resource");
-});
+router.route("/").get(getAll).post(create);
 
-router.get("/:id", function (req, res, next) {
-  res.send("respond with a GET /:id resource");
-});
-
-router.post("/", function (req, res, next) {
-  res.send("respond with a POST / resource");
-});
-
-router.put("/:id", function (req, res, next) {
-  res.send("respond with a PUT / resource");
-});
-
-router.delete("/:id", function (req, res, next) {
-  res.send("respond with a DELETE / resource");
-});
+router.route("/:id").get(getSingle).put(update).delete(deleteSingle);
 
 module.exports = router;
