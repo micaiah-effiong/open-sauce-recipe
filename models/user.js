@@ -1,3 +1,6 @@
+const bcrypt = require("bcrypt");
+const _ = require("underscore");
+
 module.exports = function (sequelize, DataType) {
   let model = sequelize.define(
     "user",
@@ -20,6 +23,7 @@ module.exports = function (sequelize, DataType) {
       email: {
         type: DataType.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           isEmail: true,
           // validate length
@@ -27,15 +31,25 @@ module.exports = function (sequelize, DataType) {
       },
       password: {
         type: DataType.VIRTUAL,
+        allowNull: false,
+        set: async function (value) {
+          try {
+            const _salt = await bcrypt.genSalt(10);
+            const _hash = await bcrypt.hash(value, _salt);
+            this.setDataValue("salt", _salt);
+            this.setDataValue("hash", _hash);
+            this.setDataValue("password", password);
+          } catch (error) {
+            return error;
+          }
+        },
       },
       salt: {
         type: DataType.STRING,
-        allowNull: false,
         // validate length
       },
       hash: {
         type: DataType.STRING,
-        allowNull: false,
         // validate length
       },
     },
@@ -43,8 +57,8 @@ module.exports = function (sequelize, DataType) {
       hooks: {
         beforeValidate: function () {
           // convert email to lower case
-          if (user.email) {
-            user.email = user.email.toLowerCase().trim();
+          if (model.email) {
+            model.email = model.email.toLowerCase().trim();
           }
         },
       },
@@ -64,6 +78,8 @@ module.exports = function (sequelize, DataType) {
   model.prototype.toPublicJSON = function () {
     //
     // ommit some fields
+    let data = this.toJSON();
+    return _.omit(data, "salt", "hash", "password");
   };
 
   // class methods
