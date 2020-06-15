@@ -1,2 +1,2 @@
-# open-sauce-recipe
+# Open sauce recipe
 A recipe listing app
