@@ -1,3 +1,7 @@
+const bcrypt = require("bcrypt");
+const _ = require("underscore");
+const errorResponse = require("../handlers/error-response");
+
 module.exports = function (sequelize, DataType) {
   let model = sequelize.define(
     "user",
@@ -20,6 +24,7 @@ module.exports = function (sequelize, DataType) {
       email: {
         type: DataType.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           isEmail: true,
           // validate length
@@ -27,24 +32,39 @@ module.exports = function (sequelize, DataType) {
       },
       password: {
         type: DataType.VIRTUAL,
+        allowNull: false,
+        validate: {
+          len: [8, 100],
+        },
       },
       salt: {
         type: DataType.STRING,
-        allowNull: false,
-        // validate length
       },
       hash: {
         type: DataType.STRING,
-        allowNull: false,
-        // validate length
       },
     },
     {
       hooks: {
-        beforeValidate: function () {
-          // convert email to lower case
+        beforeValidate: function (user, options) {
+          // convert email to lower case and trim
           if (user.email) {
             user.email = user.email.toLowerCase().trim();
+          }
+        },
+        beforeCreate: async function (user, options) {
+          /*
+           * Before creating user generate salt and hash password
+           */
+          try {
+            const { password } = user;
+            const _salt = await bcrypt.genSalt(10);
+            const _hash = await bcrypt.hash(password, _salt);
+            user.setDataValue("password", password);
+            user.setDataValue("salt", _salt);
+            user.setDataValue("hash", _hash);
+          } catch (error) {
+            return error;
           }
         },
       },
@@ -53,7 +73,7 @@ module.exports = function (sequelize, DataType) {
 
   // instance methods
   // model.prototype.methodName
-  model.prototype.verifyPassword = function (password) {
+  model.prototype.verifyPassword = async function (password) {
     // run check to verify password
   };
 
@@ -64,6 +84,8 @@ module.exports = function (sequelize, DataType) {
   model.prototype.toPublicJSON = function () {
     //
     // ommit some fields
+    let data = this.toJSON();
+    return _.omit(data, "salt", "hash", "password");
   };
 
   // class methods
