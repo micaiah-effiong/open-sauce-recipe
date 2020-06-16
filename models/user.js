@@ -36,13 +36,6 @@ module.exports = function (sequelize, DataType) {
         validate: {
           len: [8, 100],
         },
-        set: function (value) {
-          const _salt = bcrypt.genSaltSync(10);
-          const _hash = bcrypt.hashSync(value, _salt);
-          this.setDataValue("password", value);
-          this.setDataValue("salt", _salt);
-          this.setDataValue("hash", _hash);
-        },
       },
       salt: {
         type: DataType.STRING,
@@ -53,10 +46,25 @@ module.exports = function (sequelize, DataType) {
     },
     {
       hooks: {
-        beforeValidate: function (model, options) {
-          // convert email to lower case
-          if (model.email) {
-            model.email = model.email.toLowerCase().trim();
+        beforeValidate: function (user, options) {
+          // convert email to lower case and trim
+          if (user.email) {
+            user.email = user.email.toLowerCase().trim();
+          }
+        },
+        beforeCreate: async function (user, options) {
+          /*
+           * Before creating user generate salt and hash password
+           */
+          try {
+            const { password } = user;
+            const _salt = await bcrypt.genSalt(10);
+            const _hash = await bcrypt.hash(password, _salt);
+            user.setDataValue("password", password);
+            user.setDataValue("salt", _salt);
+            user.setDataValue("hash", _hash);
+          } catch (error) {
+            return error;
           }
         },
       },
@@ -65,7 +73,7 @@ module.exports = function (sequelize, DataType) {
 
   // instance methods
   // model.prototype.methodName
-  model.prototype.verifyPassword = function (password) {
+  model.prototype.verifyPassword = async function (password) {
     // run check to verify password
   };
 
