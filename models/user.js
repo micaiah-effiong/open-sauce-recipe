@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const _ = require("underscore");
+const errorResponse = require("../handlers/error-response");
 
 module.exports = function (sequelize, DataType) {
   let model = sequelize.define(
@@ -32,30 +33,27 @@ module.exports = function (sequelize, DataType) {
       password: {
         type: DataType.VIRTUAL,
         allowNull: false,
-        set: async function (value) {
-          try {
-            const _salt = await bcrypt.genSalt(10);
-            const _hash = await bcrypt.hash(value, _salt);
-            this.setDataValue("salt", _salt);
-            this.setDataValue("hash", _hash);
-            this.setDataValue("password", password);
-          } catch (error) {
-            return error;
-          }
+        validate: {
+          len: [8, 100],
+        },
+        set: function (value) {
+          const _salt = bcrypt.genSaltSync(10);
+          const _hash = bcrypt.hashSync(value, _salt);
+          this.setDataValue("password", value);
+          this.setDataValue("salt", _salt);
+          this.setDataValue("hash", _hash);
         },
       },
       salt: {
         type: DataType.STRING,
-        // validate length
       },
       hash: {
         type: DataType.STRING,
-        // validate length
       },
     },
     {
       hooks: {
-        beforeValidate: function () {
+        beforeValidate: function (model, options) {
           // convert email to lower case
           if (model.email) {
             model.email = model.email.toLowerCase().trim();
