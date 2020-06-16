@@ -13,7 +13,7 @@ module.exports = function (sequelize, DataType) {
       // validate length
     },
     items: {
-      type: DataType.STRING,
+      type: DataType.JSON,
       allowNull: false,
       // validate length
     },
@@ -29,6 +29,7 @@ module.exports = function (sequelize, DataType) {
     },
     avg_rating: {
       type: DataType.INTEGER,
+      defaultValue: 0,
     },
   });
   // instance methods
@@ -46,5 +47,6 @@ module.exports = function (sequelize, DataType) {
   - items <recipe items>
   - instructions
   - origin
+  - avg_rating
 -- user id
 */
