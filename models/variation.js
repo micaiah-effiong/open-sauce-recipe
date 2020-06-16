@@ -27,6 +27,9 @@ module.exports = function (sequelize, DataType) {
       allowNull: false,
       // validate length
     },
+    avg_rating: {
+      type: DataType.INTEGER,
+    },
   });
 
   // instance methods
