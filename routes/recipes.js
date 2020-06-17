@@ -10,7 +10,7 @@ let asyncHandler = require("../handlers/async-handler");
 let variationsRouter = require("./variations");
 var router = express.Router();
 
-router.use("/variations", variationsRouter);
+router.use("/:rid/variations", variationsRouter);
 
 /* GET recipes listing. */
 router.route("/").get(asyncHandler(getAll)).post(asyncHandler(create));
