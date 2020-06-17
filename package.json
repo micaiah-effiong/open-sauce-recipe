@@ -8,7 +8,7 @@
     "start": "node ./bin/www",
     "stage": "node-dev ./bin/www",
     "dev": "nodemon ./bin/www",
-    "test": "echo \"App is running\" && exit 0"
+    "test": "mocha"
   },
   "engines": {
     "node": ">=8.0.0 <12.16.3",
@@ -31,7 +31,10 @@
     "underscore": "^1.10.2"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
     "node-dev": "^4.0.0",
+    "request": "^2.88.2",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.2.0"
   },
