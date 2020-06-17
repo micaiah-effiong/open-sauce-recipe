@@ -9,8 +9,12 @@ let {
 var router = express.Router();
 
 /* GET variations listing. */
-router.route("/").get(getAll).post(create);
+router.route("/:rid/variations/").get(getAll).post(create);
 
-router.route("/:id").get(getSingle).put(update).delete(deleteSingle);
+router
+  .route("/:rid/variations/:id")
+  .get(getSingle)
+  .put(update)
+  .delete(deleteSingle);
 
 module.exports = router;
