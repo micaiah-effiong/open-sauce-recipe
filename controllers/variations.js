@@ -4,8 +4,6 @@ module.exports = (db) => {
       let { id } = req.params;
       id = Number(id);
       let variation = await db.variation.findByPk(id);
-      console.log(variation, id);
-
       res.json({
         success: true,
         data: variation.toJSON(),

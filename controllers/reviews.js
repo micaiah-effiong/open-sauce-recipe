@@ -4,8 +4,6 @@ module.exports = (db) => {
       let { id } = req.params;
       id = Number(id);
       let review = await db.review.findByPk(id);
-      console.log(review, id);
-
       res.json({
         success: true,
         data: review.toJSON(),
