@@ -9,7 +9,6 @@ let reviewsRouter = require("./reviews");
 /* use routes*/
 router.use("/users", usersRouter);
 router.use("/recipes", recipesRouter);
-router.use("/variations", variationsRouter);
 router.use("/reviews", reviewsRouter);
 
 /* GET home page. */
