@@ -34,6 +34,7 @@
     "chai": "^4.2.0",
     "mocha": "^8.0.1",
     "node-dev": "^4.0.0",
+    "request": "^2.88.2",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.2.0"
   },
