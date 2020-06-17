@@ -9,17 +9,23 @@ module.exports = function (sequelize, DataType) {
       firstname: {
         type: DataType.STRING,
         allowNull: false,
-        // validate length
+        validate: {
+          len: [3, 100],
+        },
       },
       lastname: {
         type: DataType.STRING,
         allowNull: false,
-        // validate length
+        validate: {
+          len: [3, 100],
+        },
       },
       country: {
         type: DataType.STRING,
         allowNull: false,
-        // validate length
+        validate: {
+          len: [2],
+        },
       },
       email: {
         type: DataType.STRING,
@@ -29,6 +35,11 @@ module.exports = function (sequelize, DataType) {
           isEmail: true,
           // validate length
         },
+      },
+      role: {
+        type: DataType.ENUM,
+        values: ["user", "admin"],
+        defaultValue: "user",
       },
       password: {
         type: DataType.VIRTUAL,

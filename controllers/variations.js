@@ -1,19 +1,51 @@
 module.exports = (db) => {
   return {
-    getSingle: (req, res, next) => {
-      res.send("respond with a GET /:id resource");
+    getSingle: async (req, res, next) => {
+      let { id } = req.params;
+      id = Number(id);
+      let variation = await db.variation.findByPk(id);
+      console.log(variation, id);
+
+      res.json({
+        success: true,
+        data: variation.toJSON(),
+      });
     },
-    getAll: (req, res, next) => {
-      res.send("respond with a GET / resource");
+    getAll: async (req, res, next) => {
+      let variations = await db.variation.findAll();
+      let data = variations.map((variation) => variation.toJSON());
+
+      res.json({
+        success: true,
+        data,
+      });
     },
-    create: (req, res, next) => {
-      res.send("respond with a POST / resource");
+    create: async (req, res, next) => {
+      let variation = await db.variation.create(req.body);
+      res.json({
+        success: true,
+        data: variation,
+      });
     },
-    update: (req, res, next) => {
-      res.send("respond with a PUT /:id resource");
+    update: async (req, res, next) => {
+      let { id } = req.params;
+      id = Number(id);
+      await db.variation.update(req.body, {
+        where: { id },
+      });
+      res.json({
+        success: true,
+      });
     },
-    deleteSingle: (req, res, next) => {
-      res.send("respond with a DELETE /:id resource");
+    deleteSingle: async (req, res, next) => {
+      let { id } = req.params;
+      id = Number(id);
+      await db.variation.destroy({
+        where: { id },
+      });
+      res.json({
+        success: true,
+      });
     },
   };
 };

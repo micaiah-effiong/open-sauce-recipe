@@ -4,28 +4,42 @@ module.exports = function (sequelize, DataType) {
       type: DataType.STRING,
       allowNull: false,
       unique: true,
-      // validate length
+      validate: {
+        len: [3, 100],
+      },
     },
     description: {
       type: DataType.STRING,
       allowNull: true,
       defaultValue: null,
-      // validate length
+      validate: {
+        len: [3, 100],
+      },
     },
     items: {
-      type: DataType.STRING,
+      type: DataType.JSON,
       allowNull: false,
-      // validate length
+      validate: {
+        len: [3],
+      },
     },
     instructions: {
       type: DataType.STRING,
       allowNull: false,
-      // validate length
+      validate: {
+        len: [3],
+      },
     },
     origin: {
       type: DataType.STRING,
       allowNull: false,
-      // validate length
+      validate: {
+        len: [2, 100],
+      },
+    },
+    avg_rating: {
+      type: DataType.INTEGER,
+      defaultValue: 0,
     },
   });
   // instance methods
@@ -43,5 +57,6 @@ module.exports = function (sequelize, DataType) {
   - items <recipe items>
   - instructions
   - origin
+  - avg_rating
 -- user id
 */
