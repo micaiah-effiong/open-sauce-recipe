@@ -7,6 +7,14 @@
     "host": null,
     "dialect": "sqlite"
   },
+  "mocha_test": {
+    "username": null,
+    "password": null,
+    "database": "database_development",
+    "storage": ":memory:",
+    "host": null,
+    "dialect": "sqlite"
+  },
   "test": {
     "username": "root",
     "password": null,
