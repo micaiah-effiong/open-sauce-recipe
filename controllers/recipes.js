@@ -1,18 +1,19 @@
 const asyncHandler = require("../handlers/async-handler");
+const errorResponse = require("../handlers/error-response");
 
 module.exports = (db) => {
   return {
     getSingle: asyncHandler(async (req, res, next) => {
-      let { id } = req.params;
-      id = Number(id);
+      let id = Number(req.params.id);
       let recipe = await db.recipe.findByPk(id);
-      console.log(recipe, id);
+      if (!recipe) return next(errorResponse("Resource not found", 404));
 
       res.json({
         success: true,
         data: recipe.toJSON(),
       });
     }),
+
     getAll: asyncHandler(async (req, res, next) => {
       let recipes = await db.recipe.findAll();
       let data = recipes.map((recipe) => recipe.toJSON());
@@ -22,6 +23,7 @@ module.exports = (db) => {
         data,
       });
     }),
+
     create: asyncHandler(async (req, res, next) => {
       let recipe = await db.recipe.create(req.body);
       res.json({
@@ -29,9 +31,9 @@ module.exports = (db) => {
         data: recipe,
       });
     }),
+
     update: asyncHandler(async (req, res, next) => {
-      let { id } = req.params;
-      id = Number(id);
+      let id = Number(req.params.id);
       await db.recipe.update(req.body, {
         where: { id },
       });
@@ -39,9 +41,9 @@ module.exports = (db) => {
         success: true,
       });
     }),
+
     deleteSingle: asyncHandler(async (req, res, next) => {
-      let { id } = req.params;
-      id = Number(id);
+      let id = Number(req.params.id);
       await db.recipe.destroy({
         where: { id },
       });
