@@ -10,7 +10,6 @@
   "mocha_test": {
     "username": null,
     "password": null,
-    "database": "database_development",
     "storage": ":memory:",
     "host": null,
     "dialect": "sqlite"
