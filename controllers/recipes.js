@@ -1,6 +1,8 @@
+const asyncHandler = require("../handlers/async-handler");
+
 module.exports = (db) => {
   return {
-    getSingle: async (req, res, next) => {
+    getSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       let recipe = await db.recipe.findByPk(id);
@@ -10,8 +12,8 @@ module.exports = (db) => {
         success: true,
         data: recipe.toJSON(),
       });
-    },
-    getAll: async (req, res, next) => {
+    }),
+    getAll: asyncHandler(async (req, res, next) => {
       let recipes = await db.recipe.findAll();
       let data = recipes.map((recipe) => recipe.toJSON());
 
@@ -19,15 +21,15 @@ module.exports = (db) => {
         success: true,
         data,
       });
-    },
-    create: async (req, res, next) => {
+    }),
+    create: asyncHandler(async (req, res, next) => {
       let recipe = await db.recipe.create(req.body);
       res.json({
         success: true,
         data: recipe,
       });
-    },
-    update: async (req, res, next) => {
+    }),
+    update: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.recipe.update(req.body, {
@@ -36,8 +38,8 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
-    deleteSingle: async (req, res, next) => {
+    }),
+    deleteSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.recipe.destroy({
@@ -46,6 +48,6 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
+    }),
   };
 };

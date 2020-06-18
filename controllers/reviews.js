@@ -1,6 +1,8 @@
+const asyncHandler = require("../handlers/async-handler");
+
 module.exports = (db) => {
   return {
-    getSingle: async (req, res, next) => {
+    getSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       let review = await db.review.findByPk(id);
@@ -8,8 +10,8 @@ module.exports = (db) => {
         success: true,
         data: review.toJSON(),
       });
-    },
-    getAll: async (req, res, next) => {
+    }),
+    getAll: asyncHandler(async (req, res, next) => {
       let reviews = await db.review.findAll();
       let data = reviews.map((review) => review.toJSON());
 
@@ -17,15 +19,15 @@ module.exports = (db) => {
         success: true,
         data,
       });
-    },
-    create: async (req, res, next) => {
+    }),
+    create: asyncHandler(async (req, res, next) => {
       let review = await db.review.create(req.body);
       res.json({
         success: true,
         data: review,
       });
-    },
-    update: async (req, res, next) => {
+    }),
+    update: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.review.update(req.body, {
@@ -34,8 +36,8 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
-    deleteSingle: async (req, res, next) => {
+    }),
+    deleteSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.review.destroy({
@@ -44,6 +46,6 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
+    }),
   };
 };
