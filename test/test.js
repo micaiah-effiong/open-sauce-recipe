@@ -19,20 +19,15 @@ before((done) => {
 
 describe("test", () => {
   describe("get", () => {
-    const body = {};
-    before((done) => {
+    it("should return a string", (done) => {
       get("http://localhost:3001/test", (error, res) => {
-        body.response = res.body;
+        expect(res.body).to.equal("ci with travis");
         done();
       });
     });
-    it("should return a string", () => {
-      expect(body.response).to.equal("ci with travis");
-    });
   });
   describe("post", () => {
-    const body = {};
-    before((done) => {
+    it("should responed with success as true", (done) => {
       post(
         "http://localhost:3001/users",
         {
@@ -47,13 +42,10 @@ describe("test", () => {
           },
         },
         (error, res) => {
-          body.response = res.body;
+          expect(res.body.success).to.equal(true);
           done();
         }
       );
-    });
-    it("should responed with success as true", () => {
-      expect(body.response.success).to.equal(true);
     });
   });
 });
