@@ -10,8 +10,6 @@ before((done) => {
   db.sequelize
     .sync({ force: false })
     .then(() => {
-      console.log(db.sequelize.options);
-      console.log(process.env.NODE_ENV);
       server = app.listen(3001, done);
     })
     .catch((err) => {
@@ -39,12 +37,12 @@ describe("test", () => {
         "http://localhost:3001/users",
         {
           json: {
-            firstname: "Micaiah",
-            lastname: "Effiong",
+            firstname: "test",
+            lastname: "test",
             country: "NG",
             gender: "M",
-            email: "micaiah.effiong@gmail.com",
-            password: "nnnnnnnn",
+            email: "test@test.com",
+            password: "testing123",
             role: "admin",
           },
         },
@@ -54,8 +52,7 @@ describe("test", () => {
         }
       );
     });
-    it("should return an object", () => {
-      console.log(typeof body.response, body.response);
+    it("should responed with success as true", () => {
       expect(body.response.success).to.equal(true);
     });
   });
