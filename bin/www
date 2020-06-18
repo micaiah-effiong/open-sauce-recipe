@@ -33,7 +33,7 @@ let sslserver = https.createServer({cert, key}, app)
  */
 
 db.sequelize
-  .sync({force: true})
+  .sync()
   .then(()=>{
     sslserver.listen(8040, ()=>{
       console.log('ssl', process.env.NODE_ENV);
