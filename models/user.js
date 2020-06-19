@@ -89,16 +89,32 @@ module.exports = function (sequelize, DataType) {
 
   // instance methods
   // model.prototype.methodName
+
+  /*
+   * verify user password
+   * @param {String} password the user password
+   * @return {Boolean} true if password matches hash
+   */
   model.prototype.verifyPassword = async function (password) {
     // run check to verify password
+    let result = await !!bcrypt.compare(password, this.hash);
+    return result;
   };
 
+  /*
+   * get user's fullname
+   * @return {String} with user's firstname and lastname
+   */
   model.prototype.getFullName = function () {
     return `${this.firstname} ${this.lastname}`;
   };
 
+  /*
+   * convert user data to a non sensitive data
+   * @return {String}
+   * omit user data like salt, hast(, and password which is not stored)
+   */
   model.prototype.toPublicJSON = function () {
-    //
     // ommit some fields
     let data = this.toJSON();
     return _.omit(data, "salt", "hash", "password");
