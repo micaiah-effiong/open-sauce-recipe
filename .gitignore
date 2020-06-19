@@ -3,4 +3,6 @@ node_modules/
 config/local-cert.pem
 config/local-csr.pem
 config/local-key.pem
+migrations/
+seeders/
 data/

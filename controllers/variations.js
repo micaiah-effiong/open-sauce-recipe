@@ -1,6 +1,8 @@
+const asyncHandler = require("../handlers/async-handler");
+
 module.exports = (db) => {
   return {
-    getSingle: async (req, res, next) => {
+    getSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       let variation = await db.variation.findByPk(id);
@@ -8,8 +10,8 @@ module.exports = (db) => {
         success: true,
         data: variation.toJSON(),
       });
-    },
-    getAll: async (req, res, next) => {
+    }),
+    getAll: asyncHandler(async (req, res, next) => {
       let variations = await db.variation.findAll();
       let data = variations.map((variation) => variation.toJSON());
 
@@ -17,15 +19,15 @@ module.exports = (db) => {
         success: true,
         data,
       });
-    },
-    create: async (req, res, next) => {
+    }),
+    create: asyncHandler(async (req, res, next) => {
       let variation = await db.variation.create(req.body);
       res.json({
         success: true,
         data: variation,
       });
-    },
-    update: async (req, res, next) => {
+    }),
+    update: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.variation.update(req.body, {
@@ -34,8 +36,8 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
-    deleteSingle: async (req, res, next) => {
+    }),
+    deleteSingle: asyncHandler(async (req, res, next) => {
       let { id } = req.params;
       id = Number(id);
       await db.variation.destroy({
@@ -44,6 +46,6 @@ module.exports = (db) => {
       res.json({
         success: true,
       });
-    },
+    }),
   };
 };

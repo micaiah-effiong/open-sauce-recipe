@@ -20,6 +20,11 @@ module.exports = function (sequelize, DataType) {
           len: [3, 100],
         },
       },
+      gender: {
+        type: DataType.ENUM,
+        allowNull: false,
+        values: ["M", "F"],
+      },
       country: {
         type: DataType.STRING,
         allowNull: false,
