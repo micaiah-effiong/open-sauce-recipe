@@ -1,19 +1,10 @@
 var express = require("express");
-let { login, logout } = require("../controllers/index").auth;
+let { login, logout, register } = require("../controllers/index").auth;
 var router = express.Router();
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+let passport = require("../config/passport-config");
 
-passport.use(
-  new LocalStrategy(async function (email, password, done) {
-    let user = await db.user.findOne({ where: { email } });
-    if (!user) return done(null, false);
-    if (!(await user.verifyPassword(password))) return done(null, false);
-    return done(null, user);
-  })
-);
-
-router.route("/").get(logout);
-router.route("/").post(passport.authenticate("local"), login);
+router.route("/logout").get(logout);
+router.route("/login").post(passport.authenticate("local"), login);
+router.route("/register").post(register);
 
 module.exports = router;
