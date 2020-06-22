@@ -1,12 +1,15 @@
 var express = require("express");
 var router = express.Router();
+let isAuth = require("../middlewares/isAuth");
 
 let usersRouter = require("./users");
 let recipesRouter = require("./recipes");
 let variationsRouter = require("./variations");
 let reviewsRouter = require("./reviews");
 
-/* use routes*/
+/*
+ * app routes
+ */
 router.use("/users", usersRouter);
 router.use("/recipes", recipesRouter);
 router.use("/reviews", reviewsRouter);

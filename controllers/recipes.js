@@ -25,7 +25,14 @@ module.exports = (db) => {
     }),
 
     create: asyncHandler(async (req, res, next) => {
-      let recipe = await db.recipe.create(req.body);
+      let { name, description, items, instructions, origin } = req.body;
+      let recipe = await req.user.createRecipe({
+        name,
+        description,
+        items,
+        instructions,
+        origin,
+      });
       res.json({
         success: true,
         data: recipe,
