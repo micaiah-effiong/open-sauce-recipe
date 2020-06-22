@@ -3,30 +3,28 @@ const asyncHandler = require("../handlers/async-handler");
 module.exports = (db) => {
   return {
     getSingle: asyncHandler(async (req, res, next) => {
-      let user = await db.user.findByPk(req.params.id);
+      let id = Number(req.params.id);
+      let user = await db.user.findByPk(id);
       res.json({
         success: true,
         data: user.toJSON(),
       });
     }),
+
     getAll: asyncHandler(async (req, res, next) => {
-      let user = await db.user.findAll();
+      let users = await db.user.findAll();
+      let data = users.map((user) => user.toPublicJSON());
       res.json({
         success: true,
-        data: user,
+        data,
       });
     }),
-    create: asyncHandler(async (req, res, next) => {
-      let user = await db.user.create(req.body);
-      res.json({
-        success: true,
-        data: user.toPublicJSON(),
-      });
-    }),
+
     update: asyncHandler(async (req, res, next) => {
-      let user = await db.user.update({
+      let id = Number(req.params.id);
+      let user = await db.user.update(req.body, {
         where: {
-          id: req.params.id,
+          id,
         },
       });
       res.json({
@@ -34,8 +32,10 @@ module.exports = (db) => {
         data: user.toJSON(),
       });
     }),
+
     deleteSingle: asyncHandler(async (req, res, next) => {
-      let user = await db.user.destroy(req.params.id);
+      let id = Number(req.params.id);
+      let user = await db.user.destroy(id);
       res.json({
         success: true,
         data: user.toJSON(),
