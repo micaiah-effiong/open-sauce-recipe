@@ -29,7 +29,7 @@ describe("test", () => {
   describe("post", () => {
     it("should responed with success as true", (done) => {
       post(
-        "http://localhost:3001/users",
+        "http://localhost:3001/users/auth/register",
         {
           json: {
             firstname: "test",
