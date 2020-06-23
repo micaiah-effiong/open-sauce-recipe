@@ -37,7 +37,7 @@ module.exports = function (sequelize, DataType) {
         len: [2, 100],
       },
     },
-    avg_rating: {
+    rating: {
       type: DataType.INTEGER,
       defaultValue: 0,
     },
