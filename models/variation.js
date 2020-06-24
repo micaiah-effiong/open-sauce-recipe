@@ -45,6 +45,11 @@ module.exports = function (sequelize, DataType) {
 
   // instance methods
   // model.prototype.methodName
+
+  /*
+   * @descr calculate and update field with the average rating
+   * rating is gotten from the reviews table
+   */
   model.prototype.avgRating = async function () {
     let review = await this.getReviews();
     let avgRating = review.reduce((a, b) => a + b.rating, 0) / review.length;
