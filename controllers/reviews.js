@@ -76,8 +76,9 @@ module.exports = (db) => {
        */
       let body = _.pick(req.body, "words", "rating");
       body.to = type;
-      let userReview = await req.user.createReview(body);
-      await item.addReview(userReview);
+      let userReview = await item.createReview(body);
+      await req.user.addReview(userReview);
+
       res.json({
         success: true,
         data: userReview,
