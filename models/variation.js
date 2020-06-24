@@ -37,7 +37,7 @@ module.exports = function (sequelize, DataType) {
         len: [2, 100],
       },
     },
-    avg_rating: {
+    rating: {
       type: DataType.INTEGER,
       defaultValue: 0,
     },
@@ -45,6 +45,21 @@ module.exports = function (sequelize, DataType) {
 
   // instance methods
   // model.prototype.methodName
+
+  /*
+   * @descr calculate and update field with the average rating
+   * rating is gotten from the reviews table
+   */
+  model.prototype.avgRating = async function () {
+    let review = await this.getReviews();
+    let avgRating = review.reduce((a, b) => a + b.rating, 0) / review.length;
+    await model.update(
+      { rating: +Number(avgRating).toFixed(1) },
+      {
+        where: { id: this.id },
+      }
+    );
+  };
 
   // class methods
   // model.methodName

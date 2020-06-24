@@ -1,3 +1,4 @@
+const _ = require("underscore");
 const asyncHandler = require("../handlers/async-handler");
 const errorResponse = require("../handlers/error-response");
 
@@ -41,6 +42,7 @@ module.exports = (db) => {
        */
       let ownedReviews = await req.user.getReviews();
       let dup = ownedReviews.filter((rev) => rev.toJSON()[`${type}Id`] === id);
+
       /*
        * check for an existing review
        */
@@ -72,8 +74,11 @@ module.exports = (db) => {
        * create review from user instance
        * associate review with item
        */
-      let userReview = await req.user.createReview(req.body);
-      await item.addReview(userReview);
+      let body = _.pick(req.body, "words", "rating");
+      body.to = type;
+      let userReview = await item.createReview(body);
+      await req.user.addReview(userReview);
+
       res.json({
         success: true,
         data: userReview,
