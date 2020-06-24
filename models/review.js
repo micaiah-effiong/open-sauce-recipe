@@ -18,13 +18,13 @@ module.exports = function (sequelize, DataType) {
     {
       hooks: {
         afterCreate: async function (review, options) {
-          await setAvgRating(review);
+          await review.setAvgRating();
         },
         afterUpdate: async function (review, options) {
-          await setAvgRating(review);
+          await review.setAvgRating();
         },
         afterDestroy: async function (review, options) {
-          await setAvgRating(review);
+          await review.setAvgRating();
         },
       },
     }
@@ -33,17 +33,20 @@ module.exports = function (sequelize, DataType) {
   // instance methods
   // model.prototype.methodName
 
+  /*
+   * @descr calls average rating method of the item reviewed
+   */
+  model.prototype.setAvgRating = async function () {
+    let item = (await instance.getRecipe()) || (await instance.getVariation());
+    await item.avgRating();
+    console.log(item.toJSON());
+  };
+
   // class methods
   // model.methodName
 
   return model;
 };
-
-async function setAvgRating(instance) {
-  let item = (await instance.getRecipe()) || (await instance.getVariation());
-  await item.avgRating();
-  console.log(item.toJSON());
-}
 
 /*
   - words
