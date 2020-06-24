@@ -17,21 +17,14 @@ module.exports = function (sequelize, DataType) {
     },
     {
       hooks: {
-        afterCreate: async function (review, option) {
-          let type = `${review.to}`;
-          let typeID = `${type}Id`;
-          let _update = await model.findAll({
-            where: {
-              [typeID]: review.id,
-              to: type,
-            },
-            attributes: ["rating"],
-            include: [
-              [db.sequelize.fn("SUM", sequelize.col("rating")), "avg_ratings"],
-            ],
-            raw: true,
-          });
-          console.log(_update);
+        afterCreate: async function (review, options) {
+          await setAvgRating(review);
+        },
+        afterUpdate: async function (review, options) {
+          await setAvgRating(review);
+        },
+        afterDestroy: async function (review, options) {
+          await setAvgRating(review);
         },
       },
     }
@@ -45,6 +38,12 @@ module.exports = function (sequelize, DataType) {
 
   return model;
 };
+
+async function setAvgRating(instance) {
+  let item = (await instance.getRecipe()) || (await instance.getVariation());
+  await item.avgRating();
+  console.log(item.toJSON());
+}
 
 /*
   - words
