@@ -8,7 +8,7 @@ let server;
 
 before((done) => {
   db.sequelize
-    .sync({ force: false })
+    .sync({ force: true })
     .then(() => {
       server = app.listen(3001, done);
     })
@@ -18,6 +18,7 @@ before((done) => {
 });
 
 describe("test", () => {
+  var cookie;
   describe("get", () => {
     it("should return a string", (done) => {
       get("http://localhost:3001/test", (error, res) => {
@@ -26,7 +27,7 @@ describe("test", () => {
       });
     });
   });
-  describe("post", () => {
+  describe("Regester user", () => {
     it("should responed with success as true", (done) => {
       post(
         "http://localhost:3001/users/auth/register",
@@ -48,7 +49,7 @@ describe("test", () => {
       );
     });
   });
-  describe("post", () => {
+  describe("Login user", () => {
     it("should responed with success as true", (done) => {
       post(
         "http://localhost:3001/users/auth/login",
@@ -59,7 +60,106 @@ describe("test", () => {
           },
         },
         (error, res) => {
+          cookie = res.headers["set-cookie"];
           expect(res.body.success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
+  describe("Create a recipes", () => {
+    it("should responed with success as true", (done) => {
+      post(
+        "http://localhost:3001/recipes",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+          json: {
+            name: "Fried rice and Chicken",
+            description: "Simlpe fried rice",
+            items: ["salt", "rice", "water"],
+            instructions: "step 1, step 2, step 3",
+            origin: "Nigeria",
+          },
+        },
+        (error, res) => {
+          expect(res.body.success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
+  describe("Create a variation", () => {
+    it("should responed with success as true", (done) => {
+      post(
+        "http://localhost:3001/recipes/1/variations",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+          json: {
+            name: "Fried rice and stew",
+            description: "Simlpe fried rice",
+            items: ["salt", "rice", "water"],
+            instructions: "step 1, step 2, step 3",
+            origin: "Nigeria",
+          },
+        },
+        (error, res) => {
+          expect(res.body.success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
+  describe("Create a review", () => {
+    it("should responed with success as true", (done) => {
+      post(
+        "http://localhost:3001/reviews/variation/1",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+          json: {
+            words: "this recipes great, thanks to open-sauce",
+            rating: 1,
+          },
+        },
+        (error, res) => {
+          expect(res.body.success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
+  describe("Get All users", () => {
+    it("should responed with success as true", (done) => {
+      get(
+        "http://localhost:3001/users",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+        },
+        (error, res) => {
+          expect(JSON.parse(res.body).success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
+  describe("Get a single user", () => {
+    it("should responed with success as true", (done) => {
+      get(
+        "http://localhost:3001/users/1",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+        },
+        (error, res) => {
+          expect(JSON.parse(res.body).success).to.equal(true);
           done();
         }
       );
