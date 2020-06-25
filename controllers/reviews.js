@@ -76,22 +76,22 @@ module.exports = (db) => {
        */
       let body = _.pick(req.body, "words", "rating");
       body.to = type;
-      let userReview = await item.createReview(body);
-      await req.user.addReview(userReview);
+      let newReview = await item.createReview(body);
+      await req.user.addReview(newReview);
 
       res.json({
         success: true,
-        data: userReview,
+        data: newReview,
       });
     }),
 
     update: asyncHandler(async (req, res, next) => {
       let id = Number(req.params.id);
-      await db.review.update(req.body, {
-        where: { id },
-      });
+      let rev = await db.review.findByPk(id);
+      let data = await rev.update(req.body, { returning: true });
       res.json({
         success: true,
+        data,
       });
     }),
 
