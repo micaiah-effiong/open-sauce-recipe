@@ -39,7 +39,7 @@ module.exports = function (sequelize, DataType) {
     },
     rating: {
       type: DataType.INTEGER,
-      defaultValue: 0,
+      defaultValue: null,
     },
   });
 

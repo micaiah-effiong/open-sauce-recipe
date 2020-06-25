@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataType) {
       rating: {
         type: DataType.INTEGER,
         allowNull: false,
+        validate: {
+          min: 1,
+          max: 5,
+        },
       },
       to: {
         type: DataType.STRING,
@@ -18,12 +22,15 @@ module.exports = function (sequelize, DataType) {
     {
       hooks: {
         afterCreate: async function (review, options) {
+          console.log("afterCreate");
           await review.setAvgRating();
         },
         afterUpdate: async function (review, options) {
-          await review.setAvgRating();
+          console.log("afterUpdate");
+          return await review.setAvgRating();
         },
         afterDestroy: async function (review, options) {
+          console.log("afterDestroy");
           await review.setAvgRating();
         },
       },
@@ -37,7 +44,7 @@ module.exports = function (sequelize, DataType) {
    * @descr calls average rating method of the item reviewed
    */
   model.prototype.setAvgRating = async function () {
-    let item = (await instance.getRecipe()) || (await instance.getVariation());
+    let item = (await this.getRecipe()) || (await this.getVariation());
     await item.avgRating();
     console.log(item.toJSON());
   };
