@@ -5,6 +5,11 @@ const errorResponse = require("../handlers/error-response");
 module.exports = (db) => {
   return {
     getSingle: asyncHandler(async (req, res, next) => {
+      /*
+       * convert req.params.id to Number
+       * find the review by Primary Key
+       * if no error, respond with success=true and date
+       */
       let id = Number(req.params.id);
       let review = await db.review.findByPk(id);
       res.json({
@@ -14,6 +19,11 @@ module.exports = (db) => {
     }),
 
     getAll: asyncHandler(async (req, res, next) => {
+      /*
+       * find all reviews
+       * @variable {Array} review
+       * convert array values to raw JSON format
+       */
       let reviews = await db.review.findAll();
       let data = reviews.map((review) => review.toJSON());
 
@@ -71,14 +81,17 @@ module.exports = (db) => {
       }
 
       /*
-       * create review from user instance
-       * associate review with item
+       * create review from item instance
+       * associate review with user
        */
       let body = _.pick(req.body, "words", "rating");
       body.to = type;
       let newReview = await item.createReview(body);
       await req.user.addReview(newReview);
 
+      /*
+       * if no error, respond with success=true and date
+       */
       res.json({
         success: true,
         data: newReview,
@@ -86,9 +99,16 @@ module.exports = (db) => {
     }),
 
     update: asyncHandler(async (req, res, next) => {
+      /*
+       * convert req.params.id to Number
+       * find the review by Primary Key
+       * update review with data
+       * if no error, respond with success=true and date
+       */
       let id = Number(req.params.id);
       let rev = await db.review.findByPk(id);
       let data = await rev.update(req.body, { returning: true });
+
       res.json({
         success: true,
         data,
@@ -96,13 +116,21 @@ module.exports = (db) => {
     }),
 
     deleteSingle: asyncHandler(async (req, res, next) => {
+      /*
+       * convert req.params.id to Number
+       * find the review by Primary Key
+       * delete/destroy review
+       * if no error, respond with success=true and date
+       */
       let id = Number(req.params.id);
       let rev = await db.review.findByPk(id);
-      await rev.destroy({
+      let data = await rev.destroy({
         where: { id },
       });
+
       res.json({
         success: true,
+        data,
       });
     }),
   };
