@@ -7,7 +7,7 @@ module.exports = (db) => {
       let user = await db.user.findByPk(id);
       res.json({
         success: true,
-        data: user.toJSON(),
+        data: user.toPublicJSON(),
       });
     }),
 
