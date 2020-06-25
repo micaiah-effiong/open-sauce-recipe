@@ -32,7 +32,6 @@ module.exports = function (sequelize, DataType) {
         afterDestroy: async function (review, options) {
           console.log("afterDestroy");
           await review.setAvgRating();
-          fn(null, review);
         },
       },
     }
