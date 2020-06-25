@@ -8,10 +8,20 @@ module.exports = (db) => {
       /*
        * convert req.params.id to Number
        * find the review by Primary Key
-       * if no error, respond with success=true and date
        */
       let id = Number(req.params.id);
       let review = await db.review.findByPk(id);
+
+      /*
+       * check if review is empty and respond with -Not found 404
+       */
+      if (!review) {
+        return next(errorResponse("Resource not found", 404));
+      }
+
+      /*
+       * if no error, respond with success=true and date
+       */
       res.json({
         success: true,
         data: review.toJSON(),
@@ -67,7 +77,7 @@ module.exports = (db) => {
        * check if it is a "recipe" or "variation"
        */
       if (type !== "recipe" && type !== "variation") {
-        return next(errorResponse("Bad Request", 400));
+        return next(errorResponse("Bad request", 400));
       }
 
       /*
@@ -77,7 +87,7 @@ module.exports = (db) => {
        */
       let item = await db[type].findByPk(id);
       if (!item) {
-        return next(errorResponse("Bad Request", 400));
+        return next(errorResponse("Bad request", 400));
       }
 
       /*
@@ -92,7 +102,7 @@ module.exports = (db) => {
       /*
        * if no error, respond with success=true and date
        */
-      res.json({
+      res.status(201).json({
         success: true,
         data: newReview,
       });
@@ -106,8 +116,16 @@ module.exports = (db) => {
        * if no error, respond with success=true and date
        */
       let id = Number(req.params.id);
-      let rev = await db.review.findByPk(id);
-      let data = await rev.update(req.body, { returning: true });
+      let review = await db.review.findByPk(id);
+
+      /*
+       * check if review is empty and respond with -Bad request 400
+       */
+      if (!review) {
+        return next(errorResponse("Bad request", 400));
+      }
+
+      let data = await review.update(req.body, { returning: true });
 
       res.json({
         success: true,
@@ -123,8 +141,16 @@ module.exports = (db) => {
        * if no error, respond with success=true and date
        */
       let id = Number(req.params.id);
-      let rev = await db.review.findByPk(id);
-      let data = await rev.destroy({
+      let review = await db.review.findByPk(id);
+
+      /*
+       * check if review is empty and respond with -Bad request 400
+       */
+      if (!review) {
+        return next(errorResponse("Bad request", 400));
+      }
+
+      let data = await review.destroy({
         where: { id },
       });
 
