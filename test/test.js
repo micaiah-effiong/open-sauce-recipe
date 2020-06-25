@@ -48,6 +48,23 @@ describe("test", () => {
       );
     });
   });
+  describe("post", () => {
+    it("should responed with success as true", (done) => {
+      post(
+        "http://localhost:3001/users/auth/login",
+        {
+          json: {
+            email: "test@test.com",
+            password: "testing123",
+          },
+        },
+        (error, res) => {
+          expect(res.body.success).to.equal(true);
+          done();
+        }
+      );
+    });
+  });
 });
 
 after((done) => {
