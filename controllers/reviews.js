@@ -97,7 +97,8 @@ module.exports = (db) => {
 
     deleteSingle: asyncHandler(async (req, res, next) => {
       let id = Number(req.params.id);
-      await db.review.destroy({
+      let rev = await db.review.findByPk(id);
+      await rev.destroy({
         where: { id },
       });
       res.json({
