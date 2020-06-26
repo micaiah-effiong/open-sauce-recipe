@@ -2,6 +2,7 @@ var express = require("express");
 let {
   getSingle,
   getAll,
+  getByType,
   create,
   update,
   deleteSingle,
@@ -16,6 +17,6 @@ router.route("/").get(getAll);
 
 router.route("/:id").get(getSingle).put(update).delete(deleteSingle);
 
-router.route("/:type/:id").post(create);
+router.route("/:type/:id").get(getByType).post(create);
 
 module.exports = router;
