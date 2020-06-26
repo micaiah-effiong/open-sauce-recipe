@@ -29,17 +29,40 @@ module.exports = (db) => {
     }),
 
     getAll: asyncHandler(async (req, res, next) => {
+      console.log(req.query);
       /*
        * find all reviews
        * @variable {Array} review
        * convert array values to raw JSON format
        */
-      let reviews = await db.review.findAll();
+      let reviews = await db.review.findAll({ where: req.query });
       let data = reviews.map((review) => review.toJSON());
 
       res.json({
         success: true,
         data,
+      });
+    }),
+
+    getByType: asyncHandler(async function (req, res, next) {
+      /*
+       * this route finds review for a give item by its ID
+       */
+      let id = Number(req.params.id);
+      let { type } = req.params;
+
+      /*
+       * find the item by PK
+       * get all reviews from the item
+       * respond with item if no error
+       */
+      let item = await db[type].findByPk(id);
+      let reviews = await item.getReviews();
+
+      res.json({
+        success: true,
+        data: reviews,
+        count: reviews.length,
       });
     }),
 
