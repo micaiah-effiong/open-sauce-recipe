@@ -8,6 +8,16 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config/config.json")[env];
 const db = {};
+const Op = Sequelize.Op;
+config.operatorsAliases = {
+  $gt: Op.gt,
+  $gte: Op.gte,
+  $lt: Op.lt,
+  $lte: Op.lte,
+  $eq: Op.eq,
+  $ne: Op.ne,
+  $like: Op.like,
+};
 
 let sequelize;
 if (config.use_env_variable) {
