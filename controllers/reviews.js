@@ -1,7 +1,7 @@
 const _ = require("underscore");
 const asyncHandler = require("../handlers/async-handler");
 const errorResponse = require("../handlers/error-response");
-const { queryToSequelize } = require("../handlers/utils");
+const { qureyHandler } = require("../handlers/index");
 
 module.exports = (db) => {
   return {
@@ -30,10 +30,7 @@ module.exports = (db) => {
     }),
 
     getAll: asyncHandler(async (req, res, next) => {
-      /*
-       * convert express queries to Sequlize queries
-       */
-      let query = queryToSequelize(req.query, db.Op);
+      let fullQuery = qureyHandler(req.query);
 
       /*
        * find all reviews
@@ -42,9 +39,7 @@ module.exports = (db) => {
        * @variable {Array} data
        * assign unwrapped values to data
        */
-      let reviews = await db.review.findAll({
-        where: query,
-      });
+      let reviews = await db.review.findAll(fullQuery);
       let data = reviews.map((review) => review.toJSON());
 
       res.json({
