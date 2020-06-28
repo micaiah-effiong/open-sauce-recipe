@@ -1,6 +1,7 @@
 const _ = require("underscore");
 const asyncHandler = require("../handlers/async-handler");
 const errorResponse = require("../handlers/error-response");
+const { queryToSequelize } = require("../handlers/utils");
 
 module.exports = (db) => {
   return {
@@ -29,18 +30,27 @@ module.exports = (db) => {
     }),
 
     getAll: asyncHandler(async (req, res, next) => {
-      console.log(req.query);
+      /*
+       * convert express queries to Sequlize queries
+       */
+      let query = queryToSequelize(req.query, db.Op);
+
       /*
        * find all reviews
-       * @variable {Array} review
-       * convert array values to raw JSON format
+       * @variable {Array} reviews
+       * unwrap review values with toJSON
+       * @variable {Array} data
+       * assign unwrapped values to data
        */
-      let reviews = await db.review.findAll({ where: req.query });
+      let reviews = await db.review.findAll({
+        where: query,
+      });
       let data = reviews.map((review) => review.toJSON());
 
       res.json({
         success: true,
         data,
+        count: data.length,
       });
     }),
 
