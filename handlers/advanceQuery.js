@@ -1,7 +1,9 @@
 const queryToSequelize = require("./queryToSequelize");
 module.exports = (reqQuery) => {
   let queryObj = { ...reqQuery };
-  ["select", "sort"].forEach((field) => delete queryObj[field]);
+  ["select", "sort", "page", "limit"].forEach(
+    (field) => delete queryObj[field]
+  );
 
   /*
    * filtering fields
@@ -21,7 +23,7 @@ module.exports = (reqQuery) => {
   if (reqQuery.sort) {
     sort =
       typeof reqQuery.sort == "string"
-        ? reqQuery.sort.split(",")
+        ? reqQuery.sort.replace(/\,/g, " ").trim().split(" ")
         : [...reqQuery.sort];
 
     sort.forEach((item, num) => {
@@ -31,6 +33,13 @@ module.exports = (reqQuery) => {
         sort[num] = [item, "ASC"];
       }
     });
+  }
+
+  let page = {};
+  if (reqQuery.page || reqQuery.limit) {
+    page.limit = reqQuery.limit;
+    page.offset = reqQuery.page;
+    page.offset = (page.offset - 1) * page.limit;
   }
 
   /*
@@ -49,6 +58,7 @@ module.exports = (reqQuery) => {
    * checking query conditions
    * - filtering
    * - sorting
+   * - pagination
    */
   if (attributes.length > 0) {
     fullQuery.attributes = attributes;
@@ -57,6 +67,9 @@ module.exports = (reqQuery) => {
   if (sort.length > 0) {
     fullQuery.order = sort;
   }
+
+  fullQuery.limit = page.limit;
+  fullQuery.offset = page.offset;
 
   return fullQuery;
 };
