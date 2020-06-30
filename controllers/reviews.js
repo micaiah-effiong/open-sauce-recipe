@@ -38,10 +38,10 @@ module.exports = (db) => {
       let fullQuery = qureyHandler(req.query);
 
       /*
-       * find all reviews
        * @variable {Array} reviews
-       * unwrap review values with toJSON
        * @variable {Array} data
+       * find all reviews
+       * unwrap review values with toJSON
        * assign unwrapped values to data
        */
       let reviews = await db.review.findAll(fullQuery);
@@ -86,7 +86,7 @@ module.exports = (db) => {
       /*
        * format values
        * {String} type to lower case
-       * {String} to number
+       * {Number} id number
        */
       type = type.toLowerCase();
       id = Number(id);
