@@ -19,15 +19,15 @@ before((done) => {
 
 describe("test", () => {
   var cookie;
-  describe("get", () => {
-    it("should return a string", (done) => {
+  describe("Travis ci", () => {
+    it("Test travis ci route", (done) => {
       get("http://localhost:3001/test", (error, res) => {
         expect(res.body).to.equal("ci with travis");
         done();
       });
     });
   });
-  describe("Regester user", () => {
+  describe("Recipe app", () => {
     it("should responed with success as true", (done) => {
       post(
         "http://localhost:3001/users/auth/register",
@@ -48,9 +48,7 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Login user", () => {
-    it("should responed with success as true", (done) => {
+    it("Login user", (done) => {
       post(
         "http://localhost:3001/users/auth/login",
         {
@@ -66,9 +64,7 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Create a recipes", () => {
-    it("should responed with success as true", (done) => {
+    it("Create a recipes", (done) => {
       post(
         "http://localhost:3001/recipes",
         {
@@ -89,9 +85,7 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Create a variation", () => {
-    it("should responed with success as true", (done) => {
+    it("Create a variation", (done) => {
       post(
         "http://localhost:3001/recipes/1/variations",
         {
@@ -112,9 +106,7 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Create a review", () => {
-    it("should responed with success as true", (done) => {
+    it("Create a variation review", (done) => {
       post(
         "http://localhost:3001/reviews/variation/1",
         {
@@ -132,9 +124,7 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Get All users", () => {
-    it("should responed with success as true", (done) => {
+    it("Get All users", (done) => {
       get(
         "http://localhost:3001/users",
         {
@@ -148,11 +138,38 @@ describe("test", () => {
         }
       );
     });
-  });
-  describe("Get a single user", () => {
-    it("should responed with success as true", (done) => {
+    it("Get a single user", (done) => {
       get(
         "http://localhost:3001/users/1",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+        },
+        (error, res) => {
+          expect(JSON.parse(res.body).success).to.equal(true);
+          expect(res).to.be.ok;
+          done();
+        }
+      );
+    });
+    it("Get all reviews for a variation", (done) => {
+      get(
+        "http://localhost:3001/reviews/variation/1",
+        {
+          headers: {
+            Cookie: cookie,
+          },
+        },
+        (error, res) => {
+          expect(JSON.parse(res.body).success).to.equal(true);
+          done();
+        }
+      );
+    });
+    it("Get all reviews for a recipe", (done) => {
+      get(
+        "http://localhost:3001/reviews/recipe/1",
         {
           headers: {
             Cookie: cookie,

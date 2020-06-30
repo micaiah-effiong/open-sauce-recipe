@@ -1,6 +1,7 @@
 const _ = require("underscore");
 const asyncHandler = require("../handlers/async-handler");
 const errorResponse = require("../handlers/error-response");
+const { qureyHandler, pagination } = require("../handlers/index");
 
 module.exports = (db) => {
   return {
@@ -30,16 +31,49 @@ module.exports = (db) => {
 
     getAll: asyncHandler(async (req, res, next) => {
       /*
-       * find all reviews
-       * @variable {Array} review
-       * convert array values to raw JSON format
+       * set up pagination values
        */
-      let reviews = await db.review.findAll();
+      req.query.limit = req.query.limit || 2;
+      req.query.page = req.query.page || 0;
+      let fullQuery = qureyHandler(req.query);
+
+      /*
+       * @variable {Array} reviews
+       * @variable {Array} data
+       * find all reviews
+       * unwrap review values with toJSON
+       * assign unwrapped values to data
+       */
+      let reviews = await db.review.findAll(fullQuery);
       let data = reviews.map((review) => review.toJSON());
 
       res.json({
         success: true,
         data,
+        count: data.length,
+        pagination: await pagination(req.query),
+      });
+    }),
+
+    getByType: asyncHandler(async function (req, res, next) {
+      /*
+       * this route finds review for a give item by its ID
+       */
+      let id = Number(req.params.id);
+      let { type } = req.params;
+
+      /*
+       * find the item by PK
+       * get all reviews from the item
+       * respond with item if no error
+       */
+      let item = await db[type].findByPk(id);
+      let reviews = await item.getReviews();
+
+      res.json({
+        success: true,
+        data: reviews,
+        count: reviews.length,
       });
     }),
 
@@ -52,7 +86,7 @@ module.exports = (db) => {
       /*
        * format values
        * {String} type to lower case
-       * {String} to number
+       * {Number} id number
        */
       type = type.toLowerCase();
       id = Number(id);
