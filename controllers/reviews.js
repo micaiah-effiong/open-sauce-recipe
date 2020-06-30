@@ -1,7 +1,7 @@
 const _ = require("underscore");
 const asyncHandler = require("../handlers/async-handler");
 const errorResponse = require("../handlers/error-response");
-const { qureyHandler } = require("../handlers/index");
+const { qureyHandler, pagination } = require("../handlers/index");
 
 module.exports = (db) => {
   return {
@@ -47,41 +47,11 @@ module.exports = (db) => {
       let reviews = await db.review.findAll(fullQuery);
       let data = reviews.map((review) => review.toJSON());
 
-      /*
-       * setup response pagination
-       */
-      let pagination = {};
-      if (req.query.page || req.query.limit) {
-        let { page, limit } = req.query;
-        let offset = (page - 1) * limit;
-
-        /*
-         * delete pagination page and limit
-         * in order to get the actual length of data response
-         * which is based on the users request
-         */
-        ["page", "limit"].forEach((val) => delete fullQuery[val]);
-        let total = await db.review
-          .findAll(fullQuery)
-          .then((result) => result.length);
-
-        /*
-         *create pagination data for next and previous pages
-         */
-        if (offset > 0) {
-          pagination.prev = { page: Number(page) - 1, limit };
-        }
-
-        if (offset * page <= total) {
-          pagination.next = { page: Number(page) + 1, limit };
-        }
-      }
-
       res.json({
         success: true,
         data,
         count: data.length,
-        pagination,
+        pagination: await pagination(req.query),
       });
     }),
 

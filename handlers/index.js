@@ -1,5 +1,6 @@
 const qureyHandler = require("./advanceQuery");
 const queryToSequelize = require("./queryToSequelize");
+const pagination = require("./pagination");
 
 module.exports = {
   /*
@@ -16,4 +17,5 @@ module.exports = {
   },
   qureyHandler,
   queryToSequelize,
+  pagination,
 };
