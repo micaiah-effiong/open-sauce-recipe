@@ -6,6 +6,10 @@ const { post } = require("request");
 const { get } = require("request");
 let server;
 
+function parseBody(body) {
+  return JSON.parse(body);
+}
+
 before((done) => {
   db.sequelize
     .sync({ force: true })
@@ -181,6 +185,7 @@ describe("test", () => {
         }
       );
     });
+    let token;
     it("Report a forgotten password", (done) => {
       post(
         "http://localhost:3001/users/auth/forgot-password",
@@ -190,13 +195,24 @@ describe("test", () => {
           },
         },
         (error, res) => {
+          token = res.body.token;
           expect(res.body.success).to.equal(true);
           expect(!!res.body.token).to.equal(true);
           done();
         }
       );
     });
-    it("Confirm reset password request");
+    it("Confirm reset password request", (done) => {
+      get(
+        "http://localhost:3001/users/auth/reset-password?key=" + token,
+        (error, res) => {
+          expect(res).to.be.ok;
+          expect(parseBody(res.body).success).to.equal(true);
+          expect(!!parseBody(res.body).data.email).to.equal(true);
+          done();
+        }
+      );
+    });
     it("Reset password");
   });
 });
