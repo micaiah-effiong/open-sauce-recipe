@@ -111,10 +111,10 @@ module.exports = function (sequelize, DataType) {
   };
 
   model.prototype.getResetPasswordToken = async function () {
-    return Promise(function (resolve, reject) {
-      let email = this.email;
+    let self = this;
+    return new Promise(function (resolve, reject) {
       let payload = {
-        email,
+        email: self.email,
       };
       jwt.sign(
         payload,
