@@ -22,15 +22,12 @@ module.exports = function (sequelize, DataType) {
     {
       hooks: {
         afterCreate: async function (review, options) {
-          console.log("afterCreate");
           await review.setAvgRating();
         },
         afterUpdate: async function (review, options) {
-          console.log("afterUpdate");
           return await review.setAvgRating();
         },
         afterDestroy: async function (review, options) {
-          console.log("afterDestroy");
           await review.setAvgRating();
         },
       },
@@ -46,7 +43,6 @@ module.exports = function (sequelize, DataType) {
   model.prototype.setAvgRating = async function () {
     let item = (await this.getRecipe()) || (await this.getVariation());
     await item.avgRating();
-    console.log(item.toJSON());
   };
 
   // class methods
