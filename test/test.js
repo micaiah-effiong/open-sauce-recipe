@@ -181,6 +181,9 @@ describe("test", () => {
         }
       );
     });
+    it("Report a forgotten password");
+    it("Confirm reset password request");
+    it("Reset password");
   });
 });
 
