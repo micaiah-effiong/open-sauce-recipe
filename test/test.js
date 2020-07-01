@@ -181,7 +181,21 @@ describe("test", () => {
         }
       );
     });
-    it("Report a forgotten password");
+    it("Report a forgotten password", (done) => {
+      post(
+        "http://localhost:3001/users/auth/forgot-password",
+        {
+          json: {
+            email: "test@test.com",
+          },
+        },
+        (error, res) => {
+          expect(res.body.success).to.equal(true);
+          expect(!!res.body.token).to.equal(true);
+          done();
+        }
+      );
+    });
     it("Confirm reset password request");
     it("Reset password");
   });
