@@ -1,12 +1,13 @@
-process.env.NODE_ENV = "mocha_test";
 const { expect } = require("chai");
-const app = require("../app");
-const db = require("../models/index");
 const { post } = require("request");
 const { get } = require("request");
 const bcrypt = require("bcrypt");
+process.env.NODE_ENV = "mocha_test";
 process.env.SESSION_TOKEN = bcrypt.genSaltSync(10);
 process.env.FORGOTTEN_PASSWORD_SECRET = bcrypt.genSaltSync(10);
+const app = require("../app");
+const db = require("../models/index");
+
 let server;
 
 function parseBody(body) {
