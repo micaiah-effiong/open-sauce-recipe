@@ -4,6 +4,9 @@ const app = require("../app");
 const db = require("../models/index");
 const { post } = require("request");
 const { get } = require("request");
+const bcrypt = require("bcrypt");
+process.env.SESSION_TOKEN = bcrypt.genSaltSync(10);
+process.env.FORGOTTEN_PASSWORD_SECRET = bcrypt.genSaltSync(10);
 let server;
 
 function parseBody(body) {
