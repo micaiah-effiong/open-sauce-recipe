@@ -1,10 +1,18 @@
-process.env.NODE_ENV = "mocha_test";
 const { expect } = require("chai");
-const app = require("../app");
-const db = require("../models/index");
 const { post } = require("request");
 const { get } = require("request");
+const bcrypt = require("bcrypt");
+process.env.NODE_ENV = "mocha_test";
+process.env.SESSION_TOKEN = bcrypt.genSaltSync(10);
+process.env.FORGOTTEN_PASSWORD_SECRET = bcrypt.genSaltSync(10);
+const app = require("../app");
+const db = require("../models/index");
+
 let server;
+
+function parseBody(body) {
+  return JSON.parse(body);
+}
 
 before((done) => {
   db.sequelize
@@ -181,6 +189,35 @@ describe("test", () => {
         }
       );
     });
+    let token;
+    it("Report a forgotten password", (done) => {
+      post(
+        "http://localhost:3001/users/auth/forgot-password",
+        {
+          json: {
+            email: "test@test.com",
+          },
+        },
+        (error, res) => {
+          token = res.body.token;
+          expect(res.body.success).to.equal(true);
+          expect(!!res.body.token).to.equal(true);
+          done();
+        }
+      );
+    });
+    it("Confirm reset password request", (done) => {
+      get(
+        "http://localhost:3001/users/auth/reset-password?key=" + token,
+        (error, res) => {
+          expect(res).to.be.ok;
+          expect(parseBody(res.body).success).to.equal(true);
+          expect(!!parseBody(res.body).data.email).to.equal(true);
+          done();
+        }
+      );
+    });
+    it("Reset password");
   });
 });
 

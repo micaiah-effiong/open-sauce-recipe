@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const _ = require("underscore");
+const jwt = require("jsonwebtoken");
 const errorResponse = require("../handlers/error-response");
 
 module.exports = function (sequelize, DataType) {
@@ -107,6 +108,27 @@ module.exports = function (sequelize, DataType) {
    */
   model.prototype.getFullName = function () {
     return `${this.firstname} ${this.lastname}`;
+  };
+
+  model.prototype.getResetPasswordToken = async function () {
+    let self = this;
+    return new Promise(function (resolve, reject) {
+      let payload = {
+        email: self.email,
+      };
+      jwt.sign(
+        payload,
+        process.env.FORGOTTEN_PASSWORD_SECRET,
+        { expiresIn: "24h" },
+        (err, token) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(token);
+          }
+        }
+      );
+    });
   };
 
   /*
