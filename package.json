@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.4.0",
     "node-dev": "^4.0.0",
     "request": "^2.88.2",
     "sequelize-cli": "^5.5.1",
